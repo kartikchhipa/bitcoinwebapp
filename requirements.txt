@@ -1,4 +1,4 @@
 numpy
 datetime
 sklearn
-xgboost==0.90
+xgboost
