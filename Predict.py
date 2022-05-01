@@ -61,7 +61,7 @@ def app():
                  'Close Price Last Days':last_days_predict_plot.reshape(1,-1)[0].tolist(),'Next Days Prediction':next_days_predict_plot.reshape(1,-1)[0].tolist()})
         fig=px.line(df,x=df['Date'],y=[df['Close Price Last Days'],df['Next Days Prediction']],labels={'value':'Close Price'})
         fig.update_layout(title_text='Prediction of Future Price (Using DecisionTreeRegressor)',
-                        font_size=15, font_color='black',legend_title_text='Close Price')
+                        font_size=15,legend_title_text='Close Price')
         fig.update_xaxes(showgrid=False)
         fig.update_yaxes(showgrid=False)
         st.plotly_chart(fig)
@@ -94,7 +94,7 @@ def app():
                  'Close Price Last Days':last_days_predict_plot.reshape(1,-1)[0].tolist(),'Next Days Prediction':next_days_predict_plot.reshape(1,-1)[0].tolist()})
         fig=px.line(df,x=df['Date'],y=[df['Close Price Last Days'],df['Next Days Prediction']],labels={'value':'Close Price'})
         fig.update_layout(title_text='Prediction of Future Price (Using DecisionTreeRegressor)',
-                        font_size=15, font_color='black',legend_title_text='Close Price')
+                        font_size=15,legend_title_text='Close Price')
         fig.update_xaxes(showgrid=False)
         fig.update_yaxes(showgrid=False)
         st.plotly_chart(fig)
@@ -131,7 +131,7 @@ def app():
                  'Close Price Last Days':last_days_predict_plot.reshape(1,-1)[0].tolist(),'Next Days Prediction':next_days_predict_plot.reshape(1,-1)[0].tolist()})
         fig=px.line(df,x=df['Date'],y=[df['Close Price Last Days'],df['Next Days Prediction']],labels={'value':'Close Price'})
         fig.update_layout(title_text='Prediction of Future Price (Using DecisionTreeRegressor)',
-                        font_size=15, font_color='black',legend_title_text='Close Price')
+                        font_size=15,legend_title_text='Close Price')
         fig.update_xaxes(showgrid=False)
         fig.update_yaxes(showgrid=False)
         st.plotly_chart(fig)
@@ -172,7 +172,7 @@ def app():
                  'Close Price Last Days':last_days_predict_plot.reshape(1,-1)[0].tolist(),'Next Days Prediction':next_days_predict_plot.reshape(1,-1)[0].tolist()})
         fig=px.line(df,x=df['Date'],y=[df['Close Price Last Days'],df['Next Days Prediction']],labels={'value':'Close Price'})
         fig.update_layout(title_text='Prediction of Future Price (Using DecisionTreeRegressor)'
-                        ,font_size=15, font_color='black',legend_title_text='Close Price')
+                        ,font_size=15,legend_title_text='Close Price')
         fig.update_xaxes(showgrid=False)
         fig.update_yaxes(showgrid=False)
         st.plotly_chart(fig)
@@ -210,7 +210,7 @@ def app():
                  'Close Price Last Days':last_days_predict_plot.reshape(1,-1)[0].tolist(),'Next Days Prediction':next_days_predict_plot.reshape(1,-1)[0].tolist()})
         fig=px.line(df,x=df['Date'],y=[df['Close Price Last Days'],df['Next Days Prediction']],labels={'value':'Close Price'})
         fig.update_layout(title_text='Prediction of Future Price (Using DecisionTreeRegressor)',
-                        font_size=15, font_color='black',legend_title_text='Close Price')
+                        font_size=15,legend_title_text='Close Price')
         fig.update_xaxes(showgrid=False)
         fig.update_yaxes(showgrid=False)
         st.plotly_chart(fig)
