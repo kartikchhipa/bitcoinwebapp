@@ -2,7 +2,6 @@ import pickle
 import streamlit as st
 import pandas as pd
 import datetime
-import keras
 import numpy as np
 def create_dataset(dataset, time_step=1):
     dataX, dataY = [], []
