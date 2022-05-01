@@ -7,7 +7,7 @@ import keras
 import xgboost as xgb
 import lightgbm as lgb
 import sklearn
-
+import plotly.express as px
 def create_dataset(dataset, time_step=1):
     dataX, dataY = [], []
     for i in range(len(dataset)-time_step):
@@ -22,6 +22,7 @@ def app():
     X=data[['Date','Adj Close']]
     X_copy=X.copy()
     X_copy=X_copy[X_copy['Date']>'2021-02-19']
+    X_copy2=X_copy.copy()
     del X_copy['Date']
     scaler=pickle.load(open('scaler.sav','rb'))
     X_copy=scaler.fit_transform(np.array(X_copy).reshape(-1,1))
@@ -49,7 +50,21 @@ def app():
                 last_days.extend(yhat.tolist())
                 output_days.extend(yhat.tolist())
                 i=i+1
+        last_days_predict_plot=np.zeros((time_step+len(output_days),1))
+        last_days_predict_plot[:]=np.nan
+        last_days_predict_plot[:time_step]=np.array(X_copy2.iloc[len(X_copy_train)+len(X_copy_test)-time_step:,1]).reshape(-1,1)
+        next_days_predict_plot=np.zeros((time_step+len(output_days),1))
+        next_days_predict_plot[:]=np.nan
+        next_days_predict_plot[time_step:]=scaler.inverse_transform(np.array(output_days).reshape(-1,1))
 
+        df=pd.DataFrame({'Date':pd.date_range(datetime.datetime(2022,2,19)-datetime.timedelta(days=time_step-1), periods=time_step+len(output_days)),
+                 'Close Price Last Days':last_days_predict_plot.reshape(1,-1)[0].tolist(),'Next Days Prediction':next_days_predict_plot.reshape(1,-1)[0].tolist()})
+        fig=px.line(df,x=df['Date'],y=[df['Close Price Last Days'],df['Next Days Prediction']],labels={'value':'Close Price'})
+        fig.update_layout(title_text='Prediction of Future Price (Using DecisionTreeRegressor)',
+                        plot_bgcolor='white', font_size=15, font_color='black',legend_title_text='Close Price')
+        fig.update_xaxes(showgrid=False)
+        fig.update_yaxes(showgrid=False)
+        st.plotly_chart(fig)
         st.write(scaler.inverse_transform(np.array(output_days).reshape(1,-1)))
     if(model_name=='RandomForestRegressor'):
         last_days=list(X_copy_test[len(X_copy_test)-time_step:].reshape(1,-1))[0].tolist()
@@ -68,13 +83,27 @@ def app():
                 last_days.extend(yhat.tolist())
                 output_days.extend(yhat.tolist())
                 i=i+1
+        last_days_predict_plot=np.zeros((time_step+len(output_days),1))
+        last_days_predict_plot[:]=np.nan
+        last_days_predict_plot[:time_step]=np.array(X_copy2.iloc[len(X_copy_train)+len(X_copy_test)-time_step:,1]).reshape(-1,1)
+        next_days_predict_plot=np.zeros((time_step+len(output_days),1))
+        next_days_predict_plot[:]=np.nan
+        next_days_predict_plot[time_step:]=scaler.inverse_transform(np.array(output_days).reshape(-1,1))
+
+        df=pd.DataFrame({'Date':pd.date_range(datetime.datetime(2022,2,19)-datetime.timedelta(days=time_step-1), periods=time_step+len(output_days)),
+                 'Close Price Last Days':last_days_predict_plot.reshape(1,-1)[0].tolist(),'Next Days Prediction':next_days_predict_plot.reshape(1,-1)[0].tolist()})
+        fig=px.line(df,x=df['Date'],y=[df['Close Price Last Days'],df['Next Days Prediction']],labels={'value':'Close Price'})
+        fig.update_layout(title_text='Prediction of Future Price (Using DecisionTreeRegressor)',
+                        plot_bgcolor='white', font_size=15, font_color='black',legend_title_text='Close Price')
+        fig.update_xaxes(showgrid=False)
+        fig.update_yaxes(showgrid=False)
+        st.plotly_chart(fig)
         st.write(scaler.inverse_transform(np.array(output_days).reshape(1,-1)))
     if(model_name=='LGBMRegressor'):
         last_days=list(X_copy_test[len(X_copy_test)-time_step:].reshape(1,-1))[0].tolist()
         model=pickle.load(open('lgbmreg.sav','rb'))
         output_days=[]
         i=0
-        pred_days = 10
         while(i<pred_days):
             
             if(len(last_days)>time_step):
@@ -90,8 +119,22 @@ def app():
                 yhat = model.predict(np.array(last_days).reshape(1,-1))
                 last_days.extend(yhat.tolist())
                 output_days.extend(yhat.tolist())
-                
                 i=i+1   
+        last_days_predict_plot=np.zeros((time_step+len(output_days),1))
+        last_days_predict_plot[:]=np.nan
+        last_days_predict_plot[:time_step]=np.array(X_copy2.iloc[len(X_copy_train)+len(X_copy_test)-time_step:,1]).reshape(-1,1)
+        next_days_predict_plot=np.zeros((time_step+len(output_days),1))
+        next_days_predict_plot[:]=np.nan
+        next_days_predict_plot[time_step:]=scaler.inverse_transform(np.array(output_days).reshape(-1,1))
+
+        df=pd.DataFrame({'Date':pd.date_range(datetime.datetime(2022,2,19)-datetime.timedelta(days=time_step-1), periods=time_step+len(output_days)),
+                 'Close Price Last Days':last_days_predict_plot.reshape(1,-1)[0].tolist(),'Next Days Prediction':next_days_predict_plot.reshape(1,-1)[0].tolist()})
+        fig=px.line(df,x=df['Date'],y=[df['Close Price Last Days'],df['Next Days Prediction']],labels={'value':'Close Price'})
+        fig.update_layout(title_text='Prediction of Future Price (Using DecisionTreeRegressor)',
+                        plot_bgcolor='white', font_size=15, font_color='black',legend_title_text='Close Price')
+        fig.update_xaxes(showgrid=False)
+        fig.update_yaxes(showgrid=False)
+        st.plotly_chart(fig)
         st.write(scaler.inverse_transform(np.array(output_days).reshape(1,-1)))
     if(model_name=='LSTM Network'):
         last_days=list(X_copy_test[len(X_copy_test)-time_step:].reshape(1,-1))[0].tolist()
@@ -99,7 +142,6 @@ def app():
         train=np.array(last_days)
         output_days=[]
         i=0
-        pred_days = 10
         while(i<pred_days):
             
             if(len(last_days)>time_step):
@@ -119,13 +161,27 @@ def app():
                 last_days.extend(yhat[0].tolist())
                 output_days.extend(yhat.tolist())
                 i=i+1
+        last_days_predict_plot=np.zeros((time_step+len(output_days),1))
+        last_days_predict_plot[:]=np.nan
+        last_days_predict_plot[:time_step]=np.array(X_copy2.iloc[len(X_copy_train)+len(X_copy_test)-time_step:,1]).reshape(-1,1)
+        next_days_predict_plot=np.zeros((time_step+len(output_days),1))
+        next_days_predict_plot[:]=np.nan
+        next_days_predict_plot[time_step:]=scaler.inverse_transform(np.array(output_days).reshape(-1,1))
+
+        df=pd.DataFrame({'Date':pd.date_range(datetime.datetime(2022,2,19)-datetime.timedelta(days=time_step-1), periods=time_step+len(output_days)),
+                 'Close Price Last Days':last_days_predict_plot.reshape(1,-1)[0].tolist(),'Next Days Prediction':next_days_predict_plot.reshape(1,-1)[0].tolist()})
+        fig=px.line(df,x=df['Date'],y=[df['Close Price Last Days'],df['Next Days Prediction']],labels={'value':'Close Price'})
+        fig.update_layout(title_text='Prediction of Future Price (Using DecisionTreeRegressor)',
+                        plot_bgcolor='white', font_size=15, font_color='black',legend_title_text='Close Price')
+        fig.update_xaxes(showgrid=False)
+        fig.update_yaxes(showgrid=False)
+        st.plotly_chart(fig)
         st.write(scaler.inverse_transform(np.array(output_days).reshape(1,-1)))
     if(model_name=='DecisionTreeRegressor'):
         last_days=list(X_copy_test[len(X_copy_test)-time_step:].reshape(1,-1))[0].tolist()
         model=pickle.load(open('dtreereg.sav','rb'))
         output_days=[]
         i=0
-        pred_days = 10
         while(i<pred_days):
             
             if(len(last_days)>time_step):
@@ -142,5 +198,20 @@ def app():
                 last_days.extend(yhat.tolist())
                 output_days.extend(yhat.tolist())
                 
-                i=i+1   
+                i=i+1
+        last_days_predict_plot=np.zeros((time_step+len(output_days),1))
+        last_days_predict_plot[:]=np.nan
+        last_days_predict_plot[:time_step]=np.array(X_copy2.iloc[len(X_copy_train)+len(X_copy_test)-time_step:,1]).reshape(-1,1)
+        next_days_predict_plot=np.zeros((time_step+len(output_days),1))
+        next_days_predict_plot[:]=np.nan
+        next_days_predict_plot[time_step:]=scaler.inverse_transform(np.array(output_days).reshape(-1,1))
+
+        df=pd.DataFrame({'Date':pd.date_range(datetime.datetime(2022,2,19)-datetime.timedelta(days=time_step-1), periods=time_step+len(output_days)),
+                 'Close Price Last Days':last_days_predict_plot.reshape(1,-1)[0].tolist(),'Next Days Prediction':next_days_predict_plot.reshape(1,-1)[0].tolist()})
+        fig=px.line(df,x=df['Date'],y=[df['Close Price Last Days'],df['Next Days Prediction']],labels={'value':'Close Price'})
+        fig.update_layout(title_text='Prediction of Future Price (Using DecisionTreeRegressor)',
+                        plot_bgcolor='white', font_size=15, font_color='black',legend_title_text='Close Price')
+        fig.update_xaxes(showgrid=False)
+        fig.update_yaxes(showgrid=False)
+        st.plotly_chart(fig)
         st.write(scaler.inverse_transform(np.array(output_days).reshape(1,-1)))

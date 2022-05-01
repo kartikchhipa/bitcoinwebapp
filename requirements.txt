@@ -5,3 +5,4 @@ xgboost
 lightgbm
 keras
 tensorflow
+plotly
