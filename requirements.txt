@@ -4,3 +4,4 @@ sklearn
 xgboost
 lightgbm
 keras
+tensorflow
