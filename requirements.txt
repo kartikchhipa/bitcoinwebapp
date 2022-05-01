@@ -2,3 +2,5 @@ numpy
 datetime
 sklearn
 xgboost
+lightgbm
+keras
