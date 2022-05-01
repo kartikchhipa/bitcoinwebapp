@@ -1,4 +1,2 @@
-keras
 numpy
-pickle
 datetime
